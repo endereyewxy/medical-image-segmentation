@@ -130,3 +130,9 @@ dmypy.json
 
 # PyCharm configurations
 .idea
+
+# Downloadable datasets
+data/pets/images.tar.gz
+data/pets/annotations.tar.gz
+data/pets/images
+data/pets/annotations
