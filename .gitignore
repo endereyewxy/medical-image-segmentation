@@ -132,7 +132,4 @@ dmypy.json
 .idea
 
 # Downloadable datasets
-data/pets/images.tar.gz
-data/pets/annotations.tar.gz
-data/pets/images
-data/pets/annotations
+data/*/dataset

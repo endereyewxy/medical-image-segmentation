@@ -3,6 +3,8 @@ import numpy
 import paddle.io
 import paddle.vision.transforms as transforms
 
+from core.model import UNet
+
 
 class Dataset(paddle.io.Dataset):
     def __init__(self, mode='train'):
@@ -19,7 +21,7 @@ class Dataset(paddle.io.Dataset):
                 self.label_paths.append(label)
 
     def _get_image(self, path, grayscale=False, tf=None):
-        with PIL.Image.open(path) as img:
+        with PIL.Image.open('dataset/' + path) as img:
             if grayscale:
                 if img.mode not in ('L', 'I;16', 'I'):
                     img = img.convert('L')
@@ -40,3 +42,17 @@ class Dataset(paddle.io.Dataset):
 
     def __len__(self):
         return len(self.image_paths)
+
+
+if __name__ == '__main__':
+    train_dataset, test_dataset = Dataset(mode='train'), Dataset(mode='test')
+
+    model = paddle.Model(UNet(3, 4, [64]))
+    optim = paddle.optimizer.RMSProp(learning_rate=0.001,
+                                     rho=0.9,
+                                     momentum=0.0,
+                                     epsilon=1e-07,
+                                     centered=False,
+                                     parameters=model.parameters())
+    model.prepare(optim, paddle.nn.CrossEntropyLoss(axis=1))
+    model.fit(train_dataset, test_dataset, epochs=15, batch_size=32, verbose=1)
